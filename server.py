@@ -10,7 +10,11 @@ import time
 
 
 app = Flask(__name__)
+<<<<<<< HEAD
+config = {}
+=======
 
+>>>>>>> fdf2dd5 (Contenerizacion de la api)
 
 
 class _fila:
@@ -71,7 +75,11 @@ def index_login():
 		if(request.headers.get("Content-Type") == "application/json"):
 			data = request.json
 		else:
+<<<<<<< HEAD
+			return jsonify({"err":1, "txt":"Request invalido"}),  #WTF?
+=======
 			return jsonify({"err":1, "txt":"Request invalido"}), 500
+>>>>>>> fdf2dd5 (Contenerizacion de la api)
 		if "id" in data:
 			if not (data.get("id") in fila.clientes):
 				return jsonify({"err":1, "txt":"Tiempo limite de espera alcanzado. Intentalo de nuevo."}), 530
@@ -79,7 +87,11 @@ def index_login():
 				case "alive":
 					lugar = fila.pos(data.get("id"))
 					if(lugar == 1):
+<<<<<<< HEAD
+						nav = saes(headless=config["headless"])
+=======
 						nav = saes()
+>>>>>>> fdf2dd5 (Contenerizacion de la api)
 						if nav.errorMsg:
 							fila.eliminar(data.get("id"))
 							return jsonify({"err":1, "txt":nav.errorMsg}), 520
@@ -96,9 +108,20 @@ def index_login():
 						return jsonify({"error":"informacion de login incompleta"}), 505
 					if(not (nav.login(boleta=data.get("boleta"), password=data.get("password"), captcha=data.get("captcha")))):
 						fila.eliminar(data.get("id"))
+<<<<<<< HEAD
+						return jsonify({"error":nav.errorMsg}), 506
+					#TODO: escribir en API/webscr.py>main la rutina para extraer la info necesaria
+					d = nav.leer_datos()
+					r = quote(render_template('editar.html',\
+					 nombre=d[0],\
+					 boleta=d[1],\
+					 tel=d[2],\
+					 mail=d[3]))
+=======
 						return jsonify({"error":nav.errorMsg}), 506  
 					#TODO: escribir en API/webscr.py>main la rutina para extraer la info necesaria
 					r = quote(render_template('editar.html'))
+>>>>>>> fdf2dd5 (Contenerizacion de la api)
 					return jsonify({"html":r}), 200
 				case _ :
 					print("default")
@@ -128,4 +151,8 @@ if __name__ == '__main__':
 	# debug true/false : imprimir mensajes de error especificos
 	# online true/false : el server sera visible en localhost o en una interfaz publica
 	# frontend true/false : permitir interactuar con el frontend de la API (web)
+<<<<<<< HEAD
+	config["headless"] = True
+=======
+>>>>>>> fdf2dd5 (Contenerizacion de la api)
 	app.run(host="0.0.0.0", port=6969)

@@ -1,5 +1,6 @@
 #TODO: Generar pdf a partir de datos pasados al modulo
 
+<<<<<<< HEAD
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from PIL import Image
@@ -48,3 +49,12 @@ if __name__ == '__main__':
 	for i in range(3):
 		img_path_with_opacity = f'temp_image{i}.png'
 		os.remove(img_path_with_opacity)
+=======
+
+class main:
+	def __init__(self):
+		#cargar el documento
+	
+	def generar(self, lista={}):
+		return None
+>>>>>>> fdf2dd5 (Contenerizacion de la api)

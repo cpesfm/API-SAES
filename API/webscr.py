@@ -1,11 +1,21 @@
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+<<<<<<< HEAD
+from selenium.webdriver.firefox.options import Options
+=======
+>>>>>>> fdf2dd5 (Contenerizacion de la api)
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 #from selenium.webdriver import ActionChains
 from bs4 import BeautifulSoup as bs
 #from selenium.common.exceptions import *
+<<<<<<< HEAD
+=======
+from selenium.webdriver.firefox.options import Options
+
+
+>>>>>>> fdf2dd5 (Contenerizacion de la api)
 
 
 
@@ -20,11 +30,21 @@ class main:
 			if self.error : print(self.error)
 			self.navegador.close()
 			self.navegador.quit()
+<<<<<<< HEAD
+	def __init__(self, headless=True):
+=======
 	def __init__(self):
+>>>>>>> fdf2dd5 (Contenerizacion de la api)
 		self.limpiarError()
 		try:
 			#TODO: Soporte para chromedriver
-			self.navegador = webdriver.Firefox()
+			options = Options()
+<<<<<<< HEAD
+			options.headless = headless
+=======
+			options.headless = True
+>>>>>>> fdf2dd5 (Contenerizacion de la api)
+			self.navegador = webdriver.Firefox(options=options)
 			self.navegador.set_page_load_timeout(6) #si en 6 segundos no responde, morir
 			self.navegador.get("https://www.saes.esfm.ipn.mx/")
 		except Exception as e:

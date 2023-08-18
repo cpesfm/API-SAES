@@ -1,0 +1,7 @@
+version: '3'
+services:
+  api-saes:
+    build:
+      context: .
+    ports:
+      - "6969:6969"  # Puedes ajustar el puerto de acuerdo a tu aplicación
