@@ -2,9 +2,13 @@ from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 <<<<<<< HEAD
+<<<<<<< HEAD
 from selenium.webdriver.firefox.options import Options
 =======
 >>>>>>> fdf2dd5 (Contenerizacion de la api)
+=======
+from selenium.webdriver.firefox.options import Options
+>>>>>>> f164b79f0f3ebabb74c0462c6909b3830fc3bfd8
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 #from selenium.webdriver import ActionChains
@@ -31,19 +35,27 @@ class main:
 			self.navegador.close()
 			self.navegador.quit()
 <<<<<<< HEAD
+<<<<<<< HEAD
 	def __init__(self, headless=True):
 =======
 	def __init__(self):
 >>>>>>> fdf2dd5 (Contenerizacion de la api)
+=======
+	def __init__(self, headless=True):
+>>>>>>> f164b79f0f3ebabb74c0462c6909b3830fc3bfd8
 		self.limpiarError()
 		try:
 			#TODO: Soporte para chromedriver
 			options = Options()
 <<<<<<< HEAD
+<<<<<<< HEAD
 			options.headless = headless
 =======
 			options.headless = True
 >>>>>>> fdf2dd5 (Contenerizacion de la api)
+=======
+			options.headless = headless
+>>>>>>> f164b79f0f3ebabb74c0462c6909b3830fc3bfd8
 			self.navegador = webdriver.Firefox(options=options)
 			self.navegador.set_page_load_timeout(6) #si en 6 segundos no responde, morir
 			self.navegador.get("https://www.saes.esfm.ipn.mx/")
