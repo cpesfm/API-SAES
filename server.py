@@ -13,7 +13,6 @@ import time
 
 app = Flask(__name__)
 config = {}
-vyc = validador()
 
 class _fila:
 	#TODO: Mover este class a su propio modulo en API/
@@ -64,24 +63,29 @@ fila = _fila()
 nav = "" #TODO: Hacer esto mas seguro
 
 
-@app.route('/api/<req_type>', methods = ['POST']) #TODO: Escribir la API
-def esta_es_la_api(req_type=""): # gen_pdf(datos) | autocomplete(string parcial) | leer_saes(fila_id)
-	match(req_type):
+@app.route('/api/<request_type>', methods = ['POST']) #TODO: Escribir la API
+def esta_es_la_api(request_type=""): # gen_pdf(datos) | autocomplete(string parcial) | leer_saes(fila_id)
+	match(request_type):
 		case("gen_pdf"):
 			#TODO:sanitizar la info entrante
 			#TODO:Validar informacion (lengths, datos numericos, etc)
 			#TODO:Tratar adecuadamente peticiones JSON
 			req_data = {}
-			campos = ["name", "ID", "school_email", "personal_email", "phone","admission_month",\
-			"admission_year", "number_semester", "aproved_num", "academic_program", "credit_total"]
+			campos = [["name", "txt", 50], ["ID", "digit", 10], ["school_email", "mail", 50],["personal_email", "mail", 50],\
+			["phone", "str", 20] ,["admission_month", "str", 13], ["admission_year", "digit", 4], ["number_semester", "int", 20],\
+			["aproved_num", "int", 100], ["academic_program", "int", 7], ["credit_total", "float", 500.0]]
 			for campo in campos:
-				print(campo)
-				dato = request.form.get(campo)
+				print(campo[0])
+				dato = request.form.get(campo[0])
 				if dato:
+					dato = vyc(dato, campo[1],campo[2]) #vyc(campo, tipo, size)
+					if dato == None:
+						return "Escribiste caracteres no admitidos en algunos campos", 400
 					req_data[campo] = dato
-				else:
-					req_data[campo] = "PENDIENTE"
-				#return app.send_static_file('peticion_invalida.html'), 500
+				#else:
+					#req_data[campo] = "PENDIENTE"
+				#return app.send_static_file('peticion_invalida.html'), 500 #Error, falta informacion
+				return "Olvidaste rellenar los campos obligatorios", 400
 			#TODO:Poner esto dentro de un try except por si acaso
 			buffer = generar_pdf().crear_pdf_carga_ac(info=req_data) #objeto stringIO
 			resp = make_response(buffer.getvalue())
@@ -198,5 +202,6 @@ if __name__ == '__main__':
 	# debug true/false : imprimir mensajes de error especificos
 	# online true/false : el server sera visible en localhost o en una interfaz publica
 	# frontend true/false : permitir interactuar con el frontend de la API (web)
+	vyc = validador()
 	config["headless"] = True
 	app.run(host="0.0.0.0", port=6969)
