@@ -2,7 +2,7 @@
 # Dependiendo de cada aportacion se pueden
 # ignorar otros path o extensiones.
 
-API/*.lock
+*.lock
 
 # Flutter
 
@@ -147,6 +147,12 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+bin/
+lib/
+lib64/
+lib64
+include/
+pyvenv.cfg
 
 # Spyder project settings
 .spyderproject

@@ -3,6 +3,7 @@ from API.webscr  import main              as saes
 from API.webscr  import db_json_materias  as db
 from API.pdf     import main              as generar_pdf
 from API.validar import main              as validador
+from API.fila    import main              as fila_mdl
 #===============================================================================
 from flask        import Flask, render_template, request, Response, make_response, abort, jsonify, send_file
 from urllib.parse import quote
@@ -13,53 +14,7 @@ import time
 
 app = Flask(__name__)
 config = {}
-
-class _fila:
-	#TODO: Mover este class a su propio modulo en API/
-	def __init__(self):
-		self.gID = 0
-		self.clientes = {}
-	def generarID(self, n=3):
-		q = ""
-		for o in range(0,n):
-			p = randint(48,57) if randint(0,1) % 2 == 0 else randint(97,122) if randint(0,1) % 2 == 1 else randint(65, 90)
-			q += chr(p)
-		return q
-	def agregar(self):
-		print("add")
-		self.update()
-		self.gID += 1
-		id = self.generarID(18)
-		self.clientes[id] = [self.gID, time.time()]
-		return id
-
-	def eliminar(self, id):
-		del self.clientes[id]
-		self.gID -= 1
-		self.update()
-
-	def pos(self, id):
-		self.update()
-		return self.clientes[id][0]
-
-	def update(self):
-		#TODO: Escribir CORRECTACTAMENTE esta rutina (el dict puede ser modificado mientras es iterado, no no no)
-		eph = time.time()
-		tmp = [0, 0, 0] #ordenar, apartir de, restar
-		tmp_rm = [] #guardar las keys de los cliente a borrar
-		for cliente in self.clientes:
-			if eph-self.clientes[cliente][1] >= 10: #quitar a los que su epoch sea mas antiguo a 10 seg
-				self.gID -= 1
-				tmp = [1, self.clientes[cliente][0], tmp[2]+1] if (self.clientes[cliente][0] < tmp[1]) else [1, tmp[1], tmp[2]+1]
-				tmp_rm.append(cliente)
-		for i in tmp_rm: #borrar los clientes marcados para eliminar
-			del self.clientes[i]
-		if tmp[0]:
-			for cliente in self.clientes:
-				if self.clientes[cliente][0] >= tmp[1]:
-					self.clientes[cliente][0] = self.clientes[cliente][0] - tmp[2]
 		
-fila = _fila()
 nav = "" #TODO: Hacer esto mas seguro
 
 
@@ -67,27 +22,18 @@ nav = "" #TODO: Hacer esto mas seguro
 def esta_es_la_api(request_type=""): # gen_pdf(datos) | autocomplete(string parcial) | leer_saes(fila_id)
 	match(request_type):
 		case("gen_pdf"):
-			#TODO:sanitizar la info entrante
-			#TODO:Validar informacion (lengths, datos numericos, etc)
-			#TODO:Tratar adecuadamente peticiones JSON
-			req_data = {}
-			campos = [["name", "txt", 50], ["ID", "digit", 10], ["school_email", "mail", 50],["personal_email", "mail", 50],\
-			["phone", "str", 20] ,["admission_month", "str", 13], ["admission_year", "digit", 4], ["number_semester", "int", 20],\
-			["aproved_num", "int", 100], ["academic_program", "int", 7], ["credit_total", "float", 500.0]]
-			for campo in campos:
-				print(campo[0])
-				dato = request.form.get(campo[0])
-				if dato:
-					dato = vyc(dato, campo[1],campo[2]) #vyc(campo, tipo, size)
-					if dato == None:
-						return "Escribiste caracteres no admitidos en algunos campos", 400
-					req_data[campo] = dato
-				#else:
-					#req_data[campo] = "PENDIENTE"
-				#return app.send_static_file('peticion_invalida.html'), 500 #Error, falta informacion
-				return "Olvidaste rellenar los campos obligatorios", 400
 			#TODO:Poner esto dentro de un try except por si acaso
-			buffer = generar_pdf().crear_pdf_carga_ac(info=req_data) #objeto stringIO
+			content_type = request.headers.get("Content-Type")
+			if(content_type == "application/json"):
+				#el request es un json
+				data = request.json
+			else if(content_type == "application/x-www-form-urlencoded"): #multipart/form-data
+
+
+			val = validar_input(request)
+			if val.error:
+				return val.error_response
+			buffer = pdf().crear_pdf_carga_ac(info=req_data) #objeto stringIO
 			resp = make_response(buffer.getvalue())
 			resp.headers["Content-Disposition"] = "attachment; filename=NUMERO_DE_BOLETA_Y_EPOCH.pdf"
 			#no usar el mime de pdf porque el navegador lo abre en su lector integrado
@@ -202,6 +148,8 @@ if __name__ == '__main__':
 	# debug true/false : imprimir mensajes de error especificos
 	# online true/false : el server sera visible en localhost o en una interfaz publica
 	# frontend true/false : permitir interactuar con el frontend de la API (web)
-	vyc = validador()
+	validar_input = validador()
+	fila = fila_mdl()
+	pdf = generar_pdf()
 	config["headless"] = True
 	app.run(host="0.0.0.0", port=6969)

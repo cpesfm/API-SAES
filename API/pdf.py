@@ -1,16 +1,15 @@
 #AUTOR: El Diegongo
 #Modificacion: Yo Mero
 
-from PyPDF2                  import PdfWriter, PdfReader
-from reportlab.pdfgen        import canvas
-from reportlab.lib.pagesizes import letter
+from PyPDF2                    import PdfWriter, PdfReader
+from reportlab.pdfgen          import canvas
+from reportlab.lib.pagesizes   import letter
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase         import pdfmetrics
 import io
 
-#=================
-font     = "Helvetica" #TODO:Usar una fuente de licencia libre
-base_pdf = PdfReader(open("API/assets/pdf_base.pdf", "rb"))
-#======================
 
+CIFRAS_DESPUES_DEL_DECIMAL = 2
 
 #info = {
 #    'Name': 'Nombre Completo',
@@ -63,48 +62,48 @@ program_credits = {
 
 
 class main:
+    def trunc(f, n=CIFRAS_DESPUES_DEL_DECIMAL):
+        s = '{}'.format(f)
+        if 'e' in s or 'E' in s:
+            return '{0:.{1}f}'.format(f, n)
+        i, p, d = s.partition('.')
+        return '.'.join([i, (d+'0'*n)[:n]])
     def crear_pdf_carga_ac(self, info):
-        self.can.drawString(65, 605, info['name'])
-        self.can.drawString(395, 605, info['ID'])
-        self.can.drawString(65, 561, info['school_email'])
-        self.can.drawString(260, 561, info['personal_email'])
-        self.can.drawString(450, 561, info['phone'])
-        self.can.drawString(360, 525, info['admission_month'])
-        self.can.drawString(475, 525, info['admission_year'])
-        self.can.setFont(font, 20)
-        #self.can.drawString(semester_position[info['number_semester']], 480, 'X')
-        self.can.setFont(font, 10)
-        self.can.drawString(430, 435, str(info['aproved_num']))
-        #self.can.drawString(480, 395, str((info['aproved_num']/info['number_semester'])))
-        self.can.setFont(font, 20)
-        #self.can.drawString(program_position[info['academic_program']][0], program_position[info['academic_program']][1], 'X')
-        self.can.setFont(font, 10)
-        self.can.drawString(420, 163, str(info['credit_total']))
-        #descomentar al terminar las pruebas
-        #self.can.drawString(415, 73, str((program_credits[info['academic_program']]-info['credit_total'])/(12-info['number_semester']))) 
-        self.can.showPage()  
-        self.can.drawString(65, 605, info['name'])
-        self.can.save()
-        #move to the beginning of the StringIO buffer
-        self.packet.seek(0)
-        # create a new PDF with Reportlab
-        new_pdf = PdfReader(self.packet)
+        packet = io.BytesIO()
+        can = canvas.Canvas(self.packet, pagesize=letter)
+        can.setFont("roboto", 10) 
+        can.drawString(65, 605, info['name'])
+        can.drawString(395, 605, info['ID'])
+        can.drawString(65, 561, info['school_email'])
+        can.drawString(260, 561, info['personal_email'])
+        can.drawString(450, 561, info['phone'])
+        can.drawString(360, 525, info['admission_month'])
+        can.drawString(475, 525, info['admission_year'])
+        can.setFont("roboto", 20)
+        can.drawString(semester_position[info['number_semester']], 480, 'X')
+        can.setFont("roboto", 10)
+        can.drawString(430, 435, str(info['aproved_num']))
+        can.drawString(480, 395, self.trunc(info['aproved_num']/info['number_semester']))
+        can.setFont("roboto", 20)
+        can.drawString(program_position[info['academic_program']][0], program_position[info['academic_program']][1], 'X')
+        can.setFont("roboto", 10)
+        can.drawString(420, 163, str(info['credit_total']))
+        can.drawString(415, 73, trunc((program_credits[info['academic_program']]-info['credit_total'])/(12-info['number_semester']))) 
+        can.showPage()  
+        can.drawString(65, 605, info['name'])
+        can.save()
+        packet.seek(0)
+        new_pdf = PdfReader(packet)
         output = PdfWriter()
         bytes_PDF = io.BytesIO()
-        # add the "watermark" (which is the new pdf) on the existing page
-        for i in range(len(base_pdf.pages)): 
-            page = base_pdf.pages[i]
+        for i in range(len(self.base_pdf.pages)): 
+            page = self.base_pdf.pages[i]
             page.merge_page(new_pdf.pages[i])
             output.add_page(page)
-        # finally, write "output" to a real file
-        #output_stream = open("destination.pdf", "wb")
-        #output.write(output_stream)
         output.write(bytes_PDF) #guardar pdf en memoria
-        #output_stream.close()
-        #bytes_PDF.seek(0)
-        #return bytes_PDF.getvalue()
         return bytes_PDF
+        
     def __init__(self):
-        self.packet = io.BytesIO()
-        self.can = canvas.Canvas(self.packet, pagesize=letter)
-        self.can.setFont(font, 10) #TODO: 
+        print("(init) " + __name__)
+        pdfmetrics.registerFont(TTFont('roboto', 'API/assets/Roboto-Regular.ttf'))
+        self.base_pdf = PdfReader(open("API/assets/pdf_base.pdf", "rb"))
