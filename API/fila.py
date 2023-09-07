@@ -1,10 +1,11 @@
-
+from random import randint
 
 
 
 class main:
-    def __init__(self):
-    	self.gID = 0
+	def __init__(self):
+		print("(init) " + __name__)
+		self.gID = 0
 		self.clientes = {}
 	def generarID(self, n=3):
 		q = ""

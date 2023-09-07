@@ -62,7 +62,7 @@ program_credits = {
 
 
 class main:
-    def trunc(f, n=CIFRAS_DESPUES_DEL_DECIMAL):
+    def trunc(self, f, n=CIFRAS_DESPUES_DEL_DECIMAL):
         s = '{}'.format(f)
         if 'e' in s or 'E' in s:
             return '{0:.{1}f}'.format(f, n)
@@ -70,7 +70,7 @@ class main:
         return '.'.join([i, (d+'0'*n)[:n]])
     def crear_pdf_carga_ac(self, info):
         packet = io.BytesIO()
-        can = canvas.Canvas(self.packet, pagesize=letter)
+        can = canvas.Canvas(packet, pagesize=letter)
         can.setFont("roboto", 10) 
         can.drawString(65, 605, info['name'])
         can.drawString(395, 605, info['ID'])
@@ -88,9 +88,9 @@ class main:
         can.drawString(program_position[info['academic_program']][0], program_position[info['academic_program']][1], 'X')
         can.setFont("roboto", 10)
         can.drawString(420, 163, str(info['credit_total']))
-        can.drawString(415, 73, trunc((program_credits[info['academic_program']]-info['credit_total'])/(12-info['number_semester']))) 
+        can.drawString(415, 73, self.trunc((program_credits[info['academic_program']]-info['credit_total'])/(12-info['number_semester']))) #??? 
         can.showPage()  
-        can.drawString(65, 605, info['name'])
+        can.drawString(65, 605, info['name']) # ??????
         can.save()
         packet.seek(0)
         new_pdf = PdfReader(packet)

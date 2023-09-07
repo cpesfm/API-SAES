@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+	</head>
+	<body>
+		<form id="datos" action="/api/gen_pdf" method="POST" target="_self">
+			<input type="hidden" name="name" value="María de los Remedios Cipriano de la Santísima Trinidad Ruiz y Picasso">
+			<input type="hidden" name="ID" value="0000000000">
+			<input type="hidden" name="phone" value="0000000000">
+			<input type="hidden" name="personal_email" value="abcdf@abc.abc">
+			<input type="hidden" name="admission_year" value="2023">
+			<input type="hidden" name="credit_total" value="420.6969696969696969">
+			<input type="hidden" name="aproved_num" value="20">
+			<input type="hidden" name="number_semester" value="3">
+			<input type="hidden" name="school_email" value="abcdf@abc.abd">
+			<input type="hidden" name="admission_month" value="hola">
+			<input type="hidden" name="academic_program" value="2">
+		</form>
+		<button onclick="triggerDownload()">test pdf</button>
+	</body>
+	<script>
+		function triggerDownload(){
+			document.getElementById("datos").submit();
+		}
+	</script>
+</html>

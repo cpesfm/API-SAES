@@ -8,7 +8,6 @@ from API.fila    import main              as fila_mdl
 from flask        import Flask, render_template, request, Response, make_response, abort, jsonify, send_file
 from urllib.parse import quote
 from markupsafe   import escape
-from random       import randint
 import time
 
 
@@ -27,14 +26,14 @@ def esta_es_la_api(request_type=""): # gen_pdf(datos) | autocomplete(string parc
 			if(content_type == "application/json"):
 				#el request es un json
 				data = validar_input.validar_json(request.json)
-			else if(content_type == "application/x-www-form-urlencoded"): #multipart/form-data
+			elif(content_type == "application/x-www-form-urlencoded"): #multipart/form-data
 				#el request es un form
 				data = validar_input.validar_form(request.form)
 			else:
 				return app.send_static_file('peticion_invalida.html'), 400
 			if data.error:
-				return data.error_response
-			buffer = pdf().crear_pdf_carga_ac(info=data.info)
+				return data.error_response, 400
+			buffer = pdf.crear_pdf_carga_ac(info=data.data)
 			#resp = make_response(buffer.getvalue())
 			#resp.headers["Content-Type"] = ""
 			#resp.headers["X-Content-Type-Options"] = "nosniff"
@@ -45,8 +44,8 @@ def esta_es_la_api(request_type=""): # gen_pdf(datos) | autocomplete(string parc
 			#resp.mimetype = "application/octet-stream" #triggerear la descarga del pdf
 			#return resp
 			if buffer:
-				return Response(buffer, mimetype="application/octet-stream",\
-				headers={"Content-Disposition":"attachment; filename=" + data.info["ID"] + "_" + fila.generarID() + ".pdf",\
+				return Response(buffer.getvalue(), mimetype="application/octet-stream",\
+				headers={"Content-Disposition":"attachment; filename=" + data.data["ID"] + "_" + fila.generarID() + ".pdf",\
 				"X-Content-Type-Options":"nosniff"})
 			return app.send_static_file('peticion_invalida.html'), 400
 		case("autocomplete"):
@@ -133,9 +132,14 @@ def hoja_inscripcion(cliente_id=""):
 		return render_template_temp
 	return app.send_static_file('peticion_invalida.html'), 400
 
-@app.route("/test")
-def testing_api():
-	return app.send_static_file('editar_base.html'), 200
+@app.route("/testing/<test>")
+def testing_api(test=""):
+	match(test):
+		case "editar":
+			return app.send_static_file('editar_base.html'), 200
+		case "pdf":
+			return app.send_static_file('pdf_test.html'), 200
+	return "hola", 200
 
 
 @app.route('/')
