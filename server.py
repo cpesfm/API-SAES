@@ -1,5 +1,5 @@
 #TODO: Aprender a programar bien
-from API.webscr  import main              as saes
+from API.webscr  import main              as webscr_mdl
 from API.webscr  import db_json_materias  as db
 from API.pdf     import main              as generar_pdf
 from API.validar import main              as validador
@@ -49,9 +49,9 @@ def esta_es_la_api(request_type=""): # gen_pdf(datos) | autocomplete(string parc
 				"X-Content-Type-Options":"nosniff"})
 			return app.send_static_file('peticion_invalida.html'), 400
 		case("autocomplete"):
-			return None
+			return "TODO", 404
 		case("leer_saes"):
-			return None
+			return "TODO", 404
 	#if request = GET
 	#    return send_file(
    #     buffer,
@@ -78,7 +78,7 @@ def index_login():
 				case "alive":
 					lugar = fila.pos(data.get("id"))
 					if(lugar == 1):
-						nav = saes(headless=config["headless"])
+						#nav = saes(headless=config["headless"])
 						if nav.errorMsg:
 							fila.eliminar(data.get("id"))
 							return jsonify({"err":1, "txt":nav.errorMsg}), 520
@@ -164,5 +164,6 @@ if __name__ == '__main__':
 	validar_input = validador()
 	fila = fila_mdl()
 	pdf = generar_pdf()
+	saes = webscr_mdl()
 	config["headless"] = True
 	app.run(host="0.0.0.0", port=6969)

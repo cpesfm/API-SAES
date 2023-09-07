@@ -22,23 +22,24 @@ class main:
 			case "firefox":
 				#TODO:verificar si hay geckodriver
 				options = FFOps()
-				options.headless = headless
-				profile = webdriver.FirefoxProfile()
-				profile.set_preference("browser.cache.disk.enable", False)
-				profile.set_preference("browser.cache.memory.enable", False)
-				profile.set_preference("browser.cache.offline.enable", False)
-				profile.set_preference("network.http.use-cache", True)
+				if headless : options.headless = headless
+				options.set_preference("browser.cache.disk.enable", False)
+				options.set_preference("browser.cache.memory.enable", False)
+				options.set_preference("browser.cache.offline.enable", False)
+				options.set_preference("network.http.use-cache", True)
 				#driver = webdriver.Firefox(profile)
 				#executable_path = "./geckodriver"
-				self.navegador = webdriver.Firefox(profile, options=options)
+				self.navegador = webdriver.Firefox(options=options)
+				return True
 			case "chrome":
 				#TODO:verificar si hay chromedriver
 				options = ChrOps()
 				if headless : options.add_argument("--headless")
 				options.add_experimental_option("detach", False)
-				#executable_path="./chromedriver"
+				#service="./chromedriver"
 				self.navegador = webdriver.Chrome(options=options)
-		raise Exception("Navegador no reconocido / no especificado")
+				return True
+		return False
 	def setError(self, msg, e):
 		self.error = e
 		self.errorMsg = msg
@@ -55,16 +56,20 @@ class main:
 		#options = Options()
 		#options.headless = headless
 		#self.navegador = webdriver.Firefox(options=options)
-		self.setNav(navegador, headless)
+		if not self.setNav(navegador, headless):
+			raise Exception("Navegador no reconocido / no especificado")
 		self.navegador.set_page_load_timeout(6) #si en 6 segundos no responde, morir
 		self.client_ID = ""
-	def get_captcha(self):
+def cargar_saes(self):
 		self.limpiarError()
 		try:
 			self.navegador.get("https://www.saes.esfm.ipn.mx/")
 		except Exception as e:
 			self.setError("El SAES no responde, (offline?)", e)
 			self.cerrar()
+	
+	def get_captcha(self):
+		self.limpiarError()
 		try:
 			captcha = WebDriverWait(self.navegador, 10).until(EC.visibility_of(self.navegador.find_element(By.CLASS_NAME, 'LBD_CaptchaImage')))
 			captchab64 = captcha.screenshot_as_base64
