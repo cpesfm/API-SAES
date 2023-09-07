@@ -2,14 +2,22 @@ from flask import make_response
 import re
 
 MAX_STR_SIZE = 200
-CAMPOS = [["name", "txt", 50], ["ID", "digit", 10], ["school_email", "mail", 50],["personal_email", "mail", 50],\
-			["phone", "str", 20] ,["admission_month", "str", 13], ["admission_year", "digit", 4], ["number_semester", "int", 20],\
-			["aproved_num", "int", 100], ["academic_program", "int", 7], ["credit_total", "float", 500.0]]
+#CAMPOS = [["name", "txt", 50], ["ID", "digit", 10], ["school_email", "mail", 50],["personal_email", "mail", 50],\
+#			["phone", "str", 20] ,["admission_month", "str", 13], ["admission_year", "digit", 4], ["number_semester", "int", 20],\
+#			["aproved_num", "int", 100], ["academic_program", "int", 7], ["credit_total", "float", 500.0]]
+
+CAMPOS = {"name":["txt", 50],"ID":["digit", 10],"school_email":["mail", 50],"personal_email":["mail", 50],"phone":["str", 20],\
+			"admission_month":["str", 13],"admission_year",["digit", 4],"number_semester":["int", 20],"aproved_num":["int", 100],\
+			"academic_program":["int", 7],"credit_total":["float", 500.0]}
 
 #============== strings ================
 ERR_CARACTERES_NO_ADMITIDOS = "Escribiste caracteres no admitidos en algunos campos"
 ERR_CAMPOS_VACIOS = "Olvidaste rellenar los campos obligatorios"
 #=======================================
+
+class valObj:
+	def __init__(self, err=True):
+		self.error = err
 
 class main:
 	def vyc(self, dato, tipo, d_size=MAX_STR_SIZE):
@@ -39,21 +47,19 @@ class main:
 				return None if self.reStr.search(dato) == None else dato
 		return None
 	#def validarBoletaAlumno(self, num):
-	def __call__(self, request_in): #Aqui procesar y validar el request
-		#TODO:sanitizar la info entrante
 
-			for campo in campos:
-				print(campo[0])
-				dato = request.form.get(campo[0])
-				if dato:
-					dato = vyc(dato, campo[1],campo[2]) #vyc(campo, tipo, size)
-					if dato == None:
-						return ERR_CARACTERES_NO_ADMITIDOS
-					req_data[campo] = dato
-				return ERR_CAMPOS_VACIOS		
-		else:
-			return None
-		
+	def validar_form(self, input):
+		for campo in campos:
+			dato = request.form.get(campo[0])
+			if dato:
+				dato = vyc(dato, campo[1],campo[2]) #vyc(campo, tipo, size)
+				if dato == None:
+					return ERR_CARACTERES_NO_ADMITIDOS
+				req_data[campo] = dato
+			return ERR_CAMPOS_VACIOS		
+	else:
+		return None
+
 	def __init__(self):
 		print("(init) " + __name__)
 		self.reStr  = re.compile(r"^[a-zA-Z0-9| áéíóúÁÉÍÓÚ]+$", flags=0)

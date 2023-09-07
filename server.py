@@ -26,20 +26,29 @@ def esta_es_la_api(request_type=""): # gen_pdf(datos) | autocomplete(string parc
 			content_type = request.headers.get("Content-Type")
 			if(content_type == "application/json"):
 				#el request es un json
-				data = request.json
+				data = validar_input.validar_json(request.json)
 			else if(content_type == "application/x-www-form-urlencoded"): #multipart/form-data
-
-
-			val = validar_input(request)
-			if val.error:
-				return val.error_response
-			buffer = pdf().crear_pdf_carga_ac(info=req_data) #objeto stringIO
-			resp = make_response(buffer.getvalue())
-			resp.headers["Content-Disposition"] = "attachment; filename=NUMERO_DE_BOLETA_Y_EPOCH.pdf"
+				#el request es un form
+				data = validar_input.validar_form(request.form)
+			else:
+				return app.send_static_file('peticion_invalida.html'), 400
+			if data.error:
+				return data.error_response
+			buffer = pdf().crear_pdf_carga_ac(info=data.info)
+			#resp = make_response(buffer.getvalue())
+			#resp.headers["Content-Type"] = ""
+			#resp.headers["X-Content-Type-Options"] = "nosniff"
+			#resp.headers["Content-Disposition"] = "attachment; filename=NUMERO_DE_BOLETA_Y_EPOCH.pdf"
+			#resp.headers["Content-Disposition"] = "attachment; filename=" + data.info["ID"] + "_" + fila.generarID() + ".pdf"
 			#no usar el mime de pdf porque el navegador lo abre en su lector integrado
 			#resp.mimetype = "application/pdf"
-			resp.mimetype = "application/octet-stream" #triggerear la descarga del pdf
-			return resp
+			#resp.mimetype = "application/octet-stream" #triggerear la descarga del pdf
+			#return resp
+			if buffer:
+				return Response(buffer, mimetype="application/octet-stream",\
+				headers={"Content-Disposition":"attachment; filename=" + data.info["ID"] + "_" + fila.generarID() + ".pdf",\
+				"X-Content-Type-Options":"nosniff"})
+			return app.send_static_file('peticion_invalida.html'), 400
 		case("autocomplete"):
 			return None
 		case("leer_saes"):
@@ -122,7 +131,7 @@ def hoja_inscripcion(cliente_id=""):
 		render_template_temp = fila.clientes[cliente_id][2]
 		fila.eliminar(cliente_id)
 		return render_template_temp
-	return app.send_static_file('peticion_invalida.html'), 500
+	return app.send_static_file('peticion_invalida.html'), 400
 
 @app.route("/test")
 def testing_api():
