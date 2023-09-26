@@ -10,10 +10,10 @@
 	
 	
 	<body>
-		<div class="bar">2. Verifica tu informacion antes de guardar</div>
-		<div class="guardar" onclick="getPDF()"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+		<!-- <div class="bar">2. Verifica tu informacion antes de guardar</div> -->
+		<div class="guardar" onclick="getPDF()"><!-- <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
 			<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
-			<p>GUARDAR</p>
+			<p>GUARDAR</p> -->
 			<form id="datos" action="/api/gen_pdf" method="POST" target="_self">
 				<input type="hidden" name="name" value="{{ nombre }}">
 				<input type="hidden" name="ID" value="{{ boleta }}">
@@ -29,9 +29,107 @@
 			</form>
 		</div>
 		<main>
-			
+			<section class="formSection currentSection">
+				<label class="formInput">
+                    Nombre:
+                    <input type="text" name="nombre" placeholder="Nombre completo" id="0" value="{{ nombre }}"/>
+                </label>
+                <label class="formInput">
+                    Número de boleta:
+                    <input type="text" name="boleta" placeholder="# de boleta" id="1" value="{{ boleta }}"/>
+                </label>
+			</section>
+			<section class="formSection">
+				<label class="formInput">
+                    Usuario Correo Institucional:
+                    <input type="text" name="correo_institucional" placeholder="Usuario@alumno.ipn.mx" id="0" value=""/>
+                </label>
+                <label class="formInput">
+                    Correo Personal:
+                    <input type="email" name="correo_personal" placeholder="usuario@ejemplo.com" id="3" value="{{ mail }}"/>
+                </label>
+				<label class="formInput">
+                    Número Telefónico:
+                    <input type="tel" name="telefono" placeholder="5512365478" id="2" value="{{ telefono }}"/>
+                </label>
+			</section>
+			<section class="formSection">
+				<label class="formInput">
+                    Mes y año de ingreso:
+                    <input type="month" name="startDate" value="{{ ingreso_a }}-01"/>
+                </label>
+			</section>
+			<section class="formSection">
+				<label class="formInput">
+                    Mes y año de ingreso:
+                    <input type="hidden" name="num_periodos" value="0"/>
+                </label>
+				<div class="optionsContainer">
+					<span class="numberOption" onclick="selecPeriodo(1)">1</span>
+					<span class="numberOption" onclick="selecPeriodo(2)">2</span>
+					<span class="numberOption" onclick="selecPeriodo(3)">3</span>
+					<span class="numberOption" onclick="selecPeriodo(4)">4</span>
+					<span class="numberOption" onclick="selecPeriodo(5)">5</span>
+					<span class="numberOption" onclick="selecPeriodo(6)">6</span>
+					<span class="numberOption" onclick="selecPeriodo(7)">7</span>
+					<span class="numberOption" onclick="selecPeriodo(8)">8</span>
+					<span class="numberOption" onclick="selecPeriodo(9)">9</span>
+					<span class="numberOption" onclick="selecPeriodo(10)">10</span>
+					<span class="numberOption" onclick="selecPeriodo(11)">11</span>
+					<span class="numberOption" onclick="selecPeriodo(12)">12</span>
+				</div>
+			</section>
+			<section class="formSection">
+				<label class="formInput">
+					Unidades acreditadas:
+					<input type="number" placeholder="#" name="mat_acreditadas" oninput="calcCociente();" value="{{ acreditadas }}"/>
+				</label>
+				<label class="formInput">
+					Unidades acreditadas / Cantidad de Periodos:
+					<input type="number" name="cociente" value="0"  step="0.01">
+				</label>
+			</section>
+			<section class="formSection">
+				<label class="formInput">
+					Programa Académico:
+					<input type="hidden" name="carrera" value="0">
+				</label>
+				<div class="programOptionsContainer">
+					<span class="programOption" onclick="selecCarrera(1)">Tronco común de la L.F. y M.</span>
+					<span class="programOption" onclick="selecCarrera(2)">Opción en Matemáticas</span>
+					<span class="programOption" onclick="selecCarrera(3)">Opción en Física</span>
+					<span class="programOption" onclick="selecCarrera(4)">Opción en Ing. Nuclear</span>
+					<span class="programOption" onclick="selecCarrera(5)">Opción en Matemática Educativa</span>
+					<span class="programOption" onclick="selecCarrera(6)">Ing. Matemática</span>
+					<span class="programOption" onclick="selecCarrera(7)">Matemática Algorítmica</span>
+				</div>
+			</section>
+			<section class="formSection">
+				<label class="formInput">
+					Créditos obtenidos hasta el momento:
+					<input type="number" name="creditos_totales" oninput="calcI()" value="{{ total_creditos }}"  step="0.01">
+				</label>
+				<label class="formInput">
+					Indicador I:
+					<input type="number" name="indicador_i" value="0" step="0.01">
+				</label>
+			</section>
+			<!-- <section class="formSection">
+
+			</section>
+			<section class="formSection">
+
+			</section>
+			<section class="formSection">
+
+			</section> -->
+			<section class="navButtons">
+				<button class="navButton" id="prevButton" onclick="prevSection()">Anterior</button>
+				<button class="navButton" id="nextButton"  onclick="nextSection()">Siguiente</button>
+				<button class="navButton" id="saveButton" onclick="getPDF()">Guardar</button>
+			</section>
 			<section class="hoja">
-				<header>
+				<!-- <header>
 					<img style="float:left;width: 10%;height: 15%;" src="https://www.ipn.mx/assets/files/imageninstitucional/imagenes/identidad/LOGO-POLIGUINDA-PANTONE222.png"/>
 					<div class="cabecera">
 						<p><b>INSTITUTO POLITECNICO NACIONAL</b></p>
@@ -40,7 +138,7 @@
 						<p><b>Periodo Escolar 24/1</b></p>
 					</div>
 					<img style="float: right;width:10%;height: 15%;" src="https://www.esfm.ipn.mx/assets/files/esfm/img/ESCUDO_ESFM.png"/>
-				</header>
+				</header> -->
 				<div class="contenedor" style="text-align: right;">
 					<p>Ciudad de México a <input type="number" id="dia" style="width: 50px;"> de 
 						<select id="mes" name="mes">
@@ -59,171 +157,16 @@
 						</select>
 					de <input type="number" id="year" style="width:90px;"></p>
 				</div>
-				<table>
-					<colgroup>
-						<col style="width: 70%;">
-						<col style="border-left: 2px solid #000;width:30%;">
-					</colgroup>
-					<tr>
-						<td style="text-align: left;">Nombre:</td>
-						<td style="text-align: left;">Número de Boleta</td>
-					</tr>
-					<tr class="nb_cnt">
-						<td><input type="text" name="nombre" placeholder="Nombre completo" id="0" value="{{ nombre }}"></td>
-						<td><input type="text" name="boleta" placeholder="# de boleta" id="1" value="{{ boleta }}"></td>
-					</tr>
-				</table>
 
-				<table>
-					<colgroup>
-						<col span="4">
-						<col style="border-left: 2px solid #000;width:30%;">
-					</colgroup>
-					<tr>
-						<td colspan="4" style="text-align: left;">Correo Electrónico institucional y personal</td>
-						<td style="text-align: left;">Número telefónico, celular o fijo:</td>
-					</tr>
-					<tr class="ct_cnt">
-						<td style="padding-right:0px;"><input type="text" style="text-align:right;width:100%;" placeholder="usuario"/></td>
-						<td style="padding-left:0px;text-align: left;">@alumno.ipn.mx</td>
-						<td style="text-align: right;"><p>Personal:</p></td>
-						<td><input style="width:100%;" type="text" placeholder="usuario@ejemplo.com" id="3" value="{{ mail }}"></td>
-						<td><input type="text" style="width:100%;"placeholder=" tel" id="2" value="{{ telefono }}"></td>
-					</tr>
-				</table>
-
-
-				<table style="text-align: left;">
-					<colgroup>
-						<col style="width:70%;"/>
-						<col span="4">
-					</colgroup>
-					<tr class="ct_ma">
-						<td style="border-right: 2px solid #000;">Mes y año en que ingresó al programa académico</td>
-						<td style="text-align: right;">Mes:</td>
-						<td><input type="text" placeholder=" "/></td>
-						<td style="text-align: right;">Año:</td>
-						<td><input type="text" placeholder=" " value="{{ ingreso_a }}"/></td>
-					</tr>
-				</table>
-
-
-				<table>
-					<colgroup>
-					<col/>
-					<col span="12" style="border-left: 2px solid #000;width: 4%;"/>
-					</colgroup>
-					<tr onclick="selecPeriodo(this, event.target.dataset.periodo);" class="select_periodo" id="tr_periodo">
-						<td><input type="hidden" name="num_periodos" value="0"/>Click en el numero de periodos escolares desde el ingreso al programa académico (no contar bajas temporales)</td>
-						<td data-periodo="1">1</td>
-						<td data-periodo="2">2</td>
-						<td data-periodo="3">3</td>
-						<td data-periodo="4">4</td>
-						<td data-periodo="5">5</td>
-						<td data-periodo="6">6</td>
-						<td data-periodo="7">7</td>
-						<td data-periodo="8">8</td>
-						<td data-periodo="9">9</td>
-						<td data-periodo="10">10</td>
-						<td data-periodo="11">11</td>
-						<td data-periodo="12">12</td>
-					</tr>
-				</table>
-
-				<table>
-					<tr class="sel_ma">
-						<td>Número de unidades de aprendizaje acreditadas</td>
-						<td style="border-left:2px solid #000;"><input type="text" placeholder="#" name="mat_acreditadas" oninput="calcCociente();" value="{{ acreditadas }}"></td>
-					</tr>
-				</table>
-
-
-				<table style="border:0;">
-					<colgroup>
-						<col style="width:70%;"/>
-						<col span="3" style="width:5%">
-						<col style="width:10%;">
-					</colgroup>
-						<tr>
-							<td style="border-bottom:1px solid #000;">Número de unidades de aprendizaje acreditadas</td>
-							<td style="font-size:2em;" rowspan="2">=</td>
-							<td id="td_ua" style="border-bottom:1px solid #000;">{{ acreditadas }}</td>
-							<td style="font-size:2em;" rowspan="2">=</td>
-							<td style="border: 3px solid #000;" rowspan="2"><input type="text" name="cociente" value="?" class="cociente_inp"></td>
-							<td style="vertical-align: middle;"><button>calcular</button></td>
-						</tr>
-						<tr>
-							<td>Cantidad de periodos escolares desde el ingreso al programa académico</td>
-							<td id="td_pe">0</td>
-						</tr>
-				</table>
-
-
-				<table class="tbl_creditos">
-					<colgroup>
-						<col style="width:7%;"/>
-						<col span="2"/>
-						<col style="width: 7%;"/>
-					</colgroup>
-					<tr>
-						<td colspan="6">Click en el recuadro de su programa académico (especialidad)</td>
-					</tr>
-					<tr>
-						<td rowspan="2" class="esp_cnt"><div data-carrera="1" onclick="selecCarrera(this.dataset.carrera)" class="esp_chk"></div></td>
-						<td rowspan="2">Tronco común de la L.F. y M.</td>
-						<td>Créditos totales: 312</td>
-						<td rowspan="2" class="esp_cnt"><div data-carrera="1.4" onclick="selecCarrera(this.dataset.carrera)" class="esp_chk"></div></td>
-						<td rowspan="2">Opción en Matemática Educativa</td>
-						<td>Créditos totales: 318</td>
-					</tr>
-					<tr>
-						<td>Carga media: 40 </td>
-						<td>Carga media: 40</td>
-					</tr>
-					<tr>
-						<td rowspan="2" class="esp_cnt"><div data-carrera="1.1" onclick="selecCarrera(this.dataset.carrera)" class="esp_chk"></div></td>
-						<td rowspan="2">Opción en Matemáticas</td>
-						<td>Créditos totales:312</td>
-						<td rowspan="2" class="esp_cnt"><div data-carrera="2" onclick="selecCarrera(this.dataset.carrera)" class="esp_chk"></div></td>
-						<td rowspan="2">Ing. Matemática</td>
-						<td>Créditos totales: 336</td>
-					</tr>
-					<tr>
-						<td>Carga media: 40</td>
-						<td>Carga media: 42</td>
-					</tr>
-					<tr>
-						<td rowspan="2" class="esp_cnt"><div data-carrera="1.2" onclick="selecCarrera(this.dataset.carrera)" class="esp_chk"></div></td>
-						<td rowspan="2">Opción en Física</td>
-						<td>Créditos totales:316</td>
-						<td rowspan="2" class="esp_cnt"><div data-carrera="3" onclick="selecCarrera(this.dataset.carrera)" class="esp_chk"></div></td>
-						<td rowspan="2">Matemática Algorítmica</td>
-						<td>Créditos totales: 394</td>
-					</tr>
-					<tr>
-						<td>Carga media: 40</td>
-						<td>Carga media: 49</td>
-					</tr>
-					<tr>
-						<td rowspan="2" class="esp_cnt"><div data-carrera="1.3" onclick="selecCarrera(this.dataset.carrera)" class="esp_chk"></div></td>
-						<td rowspan="2">Opción en Ing. Nuclear</td>
-						<td>Créditos totales: 309</td>
-						<td rowspan="2" colspan="3"></td>
-					</tr>
-					<tr>
-						<td>Carga media: 40</td>
-					</tr>
-				</table>
-
-				<table>
+				<!-- <table>
 					<tr>
 						<td style="text-align:left;">Total de créditos obtenidos hasta el momento:</td>
 						<td style="border-left: 2px solid #000;"><input type="text" placeholder=" " style="width:100%;" value="{{ total_creditos }}"></td>
 					</tr>
-				</table>
+				</table> -->
 
 
-				<table class="tbl_ind">
+				<!-- <table class="tbl_ind">
 					<colgroup>
 					<col>
 					<col span="3">
@@ -248,17 +191,13 @@
 						<td colspan="3"><hr style="width: 90%;"></td>
 					</tr>
 					<tr>
-						<!--<td></td>-->
+						<td></td>
 						<td colspan="3">12 − Cantidad de periodos escolares desde el ingreso</td>
 						
 					</tr>
-				</table>
+				</table> -->
 
 
-
-			</section>
-			<hr/>
-			<section>
 
 			</section>
 		</main>
@@ -266,51 +205,131 @@
 	<script>
 		const fecha = new Date();
 
+		const formSections = Array.from(document.querySelectorAll('.formSection'));
+		const periodOptions = Array.from(document.querySelectorAll('.optionsContainer > .numberOption'));
+		const programOptions = Array.from(document.querySelectorAll('.programOptionsContainer > .programOption'));
+		formSections[1].classList.add('nextSection');
+
+		function nextSection() {
+			let nextSection = document.querySelector('.formSection.nextSection');
+			let currentSection = document.querySelector('.formSection.currentSection');
+			if(formSections.indexOf(nextSection) == 1){
+				document.querySelector('.navButtons').style.justifyContent = 'space-between';
+				document.querySelector('#prevButton').style.display = 'block';
+			}
+			if(formSections.indexOf(nextSection) == formSections.length-1){
+				document.querySelector('#nextButton').style.display = 'none';
+				document.querySelector('#saveButton').style.display = 'block';
+			} else {
+				formSections[formSections.indexOf(nextSection)+1].classList.add('nextSection');
+				document.querySelector('#nextButton').style.display = 'block';
+				document.querySelector('#saveButton').style.display = 'none';
+			}
+			nextSection.classList.remove('nextSection');
+			nextSection.classList.add('currentSection');
+			currentSection.classList.remove('currentSection');
+			if(document.querySelector('.prevSection') != null) {
+				document.querySelector('.prevSection').classList.remove('prevSection')
+			}
+			currentSection.classList.add('prevSection');
+		}
+
+		function prevSection() {
+			let prevSection = document.querySelector('.formSection.prevSection');
+			let currentSection = document.querySelector('.formSection.currentSection');
+
+			prevSection.classList.remove('prevSection');
+			prevSection.classList.add('currentSection');
+			currentSection.classList.remove('currentSection');
+			if(formSections.indexOf(prevSection) == 0){
+				document.querySelector('.navButtons').style.justifyContent = 'flex-end';
+				document.querySelector('#prevButton').style.display = 'none';
+			} else {
+				formSections[formSections.indexOf(prevSection)-1].classList.add('prevSection');
+				document.querySelector('#nextButton').style.display = 'block';
+				document.querySelector('#saveButton').style.display = 'none';
+			}
+			if(formSections.indexOf(prevSection) == formSections.length-2){
+				document.querySelector('#nextButton').style.display = 'block';
+				document.querySelector('#saveButton').style.display = 'none';
+			}
+			if(document.querySelector('.nextSection') != null) {
+				document.querySelector('.nextSection').classList.remove('nextSection')
+			}
+			currentSection.classList.add('nextSection');
+
+		}
+
 		function calcCociente(){
 			let a = document.getElementsByName("mat_acreditadas")[0].value;
 			let b = document.getElementsByName("num_periodos")[0].value;
 			if(a <= 0 || b <= 0){
 				return;
 			};
-			document.getElementById("td_ua").innerHTML = a;
 			document.getElementsByName("cociente")[0].value = a/b;
 		};
 
-		function selecPeriodo(e,num){
-			if(num===undefined){return;};
-			if(num == 0){return;}
-			if(typeof(e) != "object"){
-				e = document.getElementById("tr_periodo")
+		function calcI(){
+			const credits = {
+				1: 312,
+				2: 312,
+				3: 316,
+				4: 309,
+				5: 318,
+				6: 336,
+				7: 394
 			}
-			document.getElementById("td_pe").innerHTML = num;
-			let elems = e.children;
+			let a = credits[document.getElementsByName("carrera")[0].value];
+			let b = document.getElementsByName("creditos_totales")[0].value;
+			let c = document.getElementsByName("num_periodos")[0].value;
+			if(a <= 0 || b <= 0 || c <= 0){
+				return;
+			};
+			document.getElementsByName("indicador_i")[0].value = (a-b)/(12-c);
+		};
+
+		function selecPeriodo(num){
+			if(periodOptions.some(({classList}) => classList.contains('selected'))) {
+				document.querySelector('.optionsContainer > .numberOption.selected').classList.remove('selected');
+			}
+			periodOptions[num-1].classList.add('selected');
 			document.getElementsByName("num_periodos")[0].value = num;
 			calcCociente()
-			for(let i=1;i<=12;i++){
-				elems[i].style.border = "2px solid #000"
-				if(i<=num){
-					//seleccionar todos hasta num
-					elems[i].style.backgroundImage = "url('/static/assets/1.jpeg')";
-				}else{
-					//hacer algo con los restantes
-					elems[i].style.backgroundImage = "url('/static/assets/0.jpeg')";
-				};
-			};
+			
 		};
 		function selecCarrera(num){
+			if(programOptions.some(({classList}) => classList.contains('selected'))) {
+				document.querySelector('.programOptionsContainer > .programOption.selected').classList.remove('selected');
+			}
+			programOptions[num-1].classList.add('selected');
+			document.getElementsByName("carrera")[0].value = num;
+			calcI();
 			//alert(num);
 			//console.log(document.getElementsByClassName("esp_chk"))
-			Object.entries(document.getElementsByClassName("esp_chk")).forEach(function(element) {
+			/* Object.entries(document.getElementsByClassName("esp_chk")).forEach(function(element) {
 				element[1].style.border = "3px solid #000";
 				if(element[1].dataset.carrera == num){
 					element[1].style.backgroundImage = "url('/static/assets/1.jpeg')";
 				}else{
 					element[1].style.backgroundImage = "url('/static/assets/0.jpeg')";
 				};
-			});
+			}); */
+
 		};
 
 		function getPDF(){
+			document.getElementsByName('name')[0].value = document.getElementsByName('nombre')[0].value;
+			document.getElementsByName('ID')[0].value = document.getElementsByName('boleta')[0].value;
+			document.getElementsByName('phone')[0].value = document.getElementsByName('telefono')[0].value;
+			document.getElementsByName('school_email')[0].value = document.getElementsByName('correo_institucional')[0].value;
+			console.log(document.getElementsByName('correo_personal')[0].value)
+			document.getElementsByName('personal_email')[0].value = document.getElementsByName('correo_personal')[0].value;
+			document.getElementsByName('admission_year')[0].value = document.getElementsByName('startDate')[0].value;
+			document.getElementsByName('admission_month')[0].value = document.getElementsByName('startDate')[0].value;
+			document.getElementsByName('credit_total')[0].value = document.getElementsByName('creditos_totales')[0].value;
+			document.getElementsByName('aproved_num')[0].value = document.getElementsByName('mat_acreditadas')[0].value;
+			document.getElementsByName('number_semester')[0].value = document.getElementsByName('num_periodos')[0].value;
+			document.getElementsByName('academic_program')[0].value = document.getElementsByName('carrera')[0].value;
 			let form = document.getElementById("datos");
 			form.submit();
 			//alert("TODO: Enviar al navegador el PDF generado en memoria")
@@ -326,9 +345,12 @@
 			document.getElementById("dia").value = fecha.getDate();
 			document.getElementById("year").value = fecha.getFullYear();
 			document.getElementById("mes").value = fecha.getMonth();
-			selecPeriodo(undefined, "{{ num_periodos }}");
+			selecPeriodo("{{ num_periodos }}");
 			calcCociente()
+			calcI();
 		})
+
+
 
 	</script>
 </html>

@@ -83,7 +83,7 @@ class main:
         #descomentar al terminar las pruebas
         #self.can.drawString(415, 73, str((program_credits[info['academic_program']]-info['credit_total'])/(12-info['number_semester']))) 
         self.can.showPage()  
-        self.can.drawString(65, 605, info['name'])
+        self.can.drawString(65, 605, '')
         self.can.save()
         #move to the beginning of the StringIO buffer
         self.packet.seek(0)

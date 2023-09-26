@@ -6,45 +6,26 @@
 		<link rel="stylesheet" href="/static/styles/login.css">
 	</head>
 	<body>
-		<header>
+		<!-- <header>
 			<h2 style="margin:0;">1. Ingresa tus datos de acceso del SAES</h2>
-		</header>
+		</header> -->
 		<main>
+			<img class="login_background" src="/static/assets/bgLogin.jpg" alt=""/>
 			<iframe id="editar" title="Editar datos personales"></iframe>
-			<div id="captcha-wall">
-				<section id="captcha-cont">
-					<!--
-					<img src="/static/assets/0.jpeg" id="captcha-img"/>-->
-					<img id="captcha-img"/>
-					<input type="text" id="captcha-input" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="on" maxlength="3"><button onclick="main('captcha')" class="boton" style="width:30%;height: 34px;float: right;">Verificar</button>
-				</section>
+			<div class="login-cont">
+				<input class="login_input" type="text" name="User" id="saes_usr" placeholder="Usuario">
+				<input class="login_input" type="password" name="Password" id="saes_psw" placeholder="Contraseña">
+				<button class="login_button" id="getCaptchaButton" type="submit", onclick="main('getID')">Obtener Captcha</button>
+				<img id="captcha-img" src="" alt="">
+				<input class="login_input" type="text" id="captcha-input" name="Captcha" placeholder="ABC" autocomplete="off", autocorrect="off" spellcheck="false" autocapitalize="on" maxlength="3">
+				<div id="error"><p style="margin: 0px;">Error:</p></div>
+				<button class="login_button" id="login-button" type="submit", onclick="main('captcha')">Iniciar Sesión</button>
 			</div>
-			<section class="login-cont">
-				<table>
-					<tr>
-						<td style="text-align: right;">Boleta:</td>
-						<td><input type="text" id="saes_usr" maxlength="13" class="test"></td>
-					</tr>
-					<tr>
-						<td style="text-align: right;">Contraseña:</td>
-						<td><input type="password" id="saes_psw"></td>
-					</tr>
-					<tr>
-						<td id="status-cont" colspan="2">
-							<div id="error"><p style="margin: 0px;">Error: XD</p></div>
-							<!-- aqui poner captcha y errores -->
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2"><div class="boton" id="botonLgn" onclick="main('getID')">Enviar datos</div></td>
-					</tr>
-				</table>
-			</section>
 		</main>
-		<footer>
+		<!-- <footer>
 			<p>*datos de contacto*, , derechos de redistribucion**</p><p class="cpc_p">Hecho con <span>&hearts;</span> por el <a href="#">Club de Programacion Competitiva ESFM</a></p>
 			<p><em>version 0.0.2 (23/jul/2023)</em> git:<a href="github.com">**poner el hash del ultimo push a master con href al repo**</a></p>
-		</footer>
+		</footer> -->
 	</body>
 	<script>
 		clientID = "";
@@ -79,7 +60,6 @@
 		};
 
 		function mostrarError(info){
-			document.getElementById("captcha-wall").style.visibility = "hidden";
 			let tmp = document.getElementById("error");
 			tmp.style.display = "block";
 			tmp.innerHTML = info;
@@ -101,8 +81,12 @@
 					switch(respw["status"]){
 						case 200: //pasar directo al captcha
 							//TODO: Cuenta regresiva de 20 seg
+							document.getElementById("captcha-input").style.display = 'block';
 							document.getElementById("captcha-img").style.backgroundImage = "url('" + respw["response"].img + "')";
-							document.getElementById("captcha-wall").style.visibility = "visible";
+							document.getElementById("captcha-img").style.display = 'block';
+							document.getElementById("getCaptchaButton").style.display = 'none';
+							document.getElementById("login-button").style.display = 'block';
+
 							break;			
 						case 530: //seguir esperando en la fila y mostrar lugar recibido
 							mostrarError("Espera por favor. Lugar en la fila: " + respw["response"].pos);
@@ -130,7 +114,6 @@
 						//iframe.src = 'data:text/html;charset=utf-8,' + encodeURI(resp["response"].html);//renderizar respuesta (editar.html) en un iframe
 						//iframe.src = 'data:text/html;charset=utf-8,' + resp["response"].html;
 						iframe.src = "/hoja/" + clientID;
-						document.getElementById("captcha-wall").style.visibility = "hidden";
 						iframe.style.visibility = "visible";
 						//window.location.href="/hoja/" + clientID;
 					}else{

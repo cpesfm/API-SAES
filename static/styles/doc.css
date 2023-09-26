@@ -5,29 +5,24 @@ gama de azul o naranja para las personas con daltonismo
 body{
 	display: flex;
 	flex-flow: column nowrap;
-	background-color: #808080;
+	background-color: #ccc;
 	padding: 0;
 	margin:0;
+	overflow: hidden;
 }
 main {
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: center;
 	width: 100%;
+	height: 100vh;
+	justify-content: flex-end;
+	padding-bottom: 10vh;
+	box-sizing: border-box;
 }
 header{
 	text-align: center;
 	margin-bottom: 40px;
-}
-section{
-	max-width: 60%;
-	text-align: center;
-	background-color: #fff;
-	padding: 30px 70px 10px 70px;
-}
-input{
-	border: 0px;
-	box-sizing: border-box;
 }
 table{
 	margin-bottom: 30px;
@@ -73,6 +68,7 @@ td {
 }
 .contenedor{
 	width: 100%;
+	display: none;
 }
 .contenedor input{
 	border-bottom:2px solid #000;
@@ -130,7 +126,9 @@ td {
 	font-size: 0.9em;
 }
 
-
+.hoja {
+	display: none;
+}
 
 .hoja input[type=text]{
 	border:2px solid #fff;
@@ -139,4 +137,146 @@ td {
 .hoja input:placeholder-shown {
 	border-radius: 10px;
 	 border: 2px solid #fa2053;
+}
+
+.formSection {
+	display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    border: 1px solid #000;
+    border-radius: 1rem;
+    padding: 3rem;
+    width: 60%;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 40%;
+	translate: 100vw 0;
+	opacity: 0;
+}
+
+.formSection.currentSection {
+	translate: 0 0;
+	opacity: 1;
+	transition: translate 1s ease-in-out;
+}
+
+.formSection.nextSection {
+	translate: 100vw 0;
+	transition: 1s ease-in-out;
+}
+
+.formSection.prevSection {
+	translate: -100vw 0;
+	transition: 1s ease-in-out;
+}
+
+.formInput {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    font-family: sans-serif;
+}
+
+.formInput input {
+	padding: 0.5rem;
+	border-radius: 1rem;
+	color: #000;
+}
+
+.navButton {
+	padding: 1rem;
+    font-size: 1rem;
+    background-color: #fff;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 1px 1px #000;
+}
+.navButtons {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	width: 60%;
+	background: transparent;
+
+}
+
+.navButton:active {
+	box-shadow: 0px 0px #000;
+}
+
+.navButton:hover {
+	cursor: pointer;
+}
+
+#prevButton {
+	display: none;
+}
+
+#saveButton {
+	display: none;
+}
+
+.optionsContainer {
+	grid-column-start: 1;
+    grid-column-end: 3;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
+}
+
+.numberOption {
+	width: 100%;
+    height: 100%;
+    border: 1px solid #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1/1;
+    border-radius: .5rem;
+}
+
+.numberOption:hover {
+	cursor: pointer;
+}
+
+.numberOption.selected {
+	color: #fff;
+	background-color: #666;
+}
+
+.numberOption.selected:hover {
+	cursor: auto;
+}
+
+.programOptionsContainer {
+	grid-column-start: 1;
+    grid-column-end: 3;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.programOption {
+	width: 100%;
+    height: 100%;
+    border: 1px solid #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: .5rem;
+	padding: .5rem 0;
+}
+
+.programOption:hover {
+	cursor: pointer;
+}
+
+.programOption.selected {
+	color: #fff;
+	background-color: #666;
+}
+
+.programOption.selected:hover {
+	cursor: auto;
 }
